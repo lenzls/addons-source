@@ -1,6 +1,10 @@
+import os
+
 from gramps.gui.views.pageview import PageView
+from gramps.gui.dialog import WarningDialog
 from gramps.gen.const import GRAMPS_LOCALE as glocale
 from gi.repository import Gtk
+
 
 try:
     _trans = glocale.get_addon_translator(__file__)
@@ -14,6 +18,8 @@ class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
         PageView.__init__(self, _('Media ToDo'), pdata, dbstate, uistate)
+        self.dbstate = dbstate
+        self.uistate = uistate
 
     def build_tree(self):
         """
@@ -39,8 +45,21 @@ class MediaToDoView(PageView):
         
 
     def create_file_system_model(self):
+        media_path = self.dbstate.db.get_mediapath()
+        if media_path is None:
+            WarningDialog(
+                _("Media path not set"),
+                _('Media path not set. You must set the "Base path for relative media paths" in the Preferences.'),
+                parent=self.uistate.window
+            )
+            return
+
         store = Gtk.TreeStore(str)
         
-        treeiter = store.append(None, ["root"])
-        treeiter2 = store.append(treeiter, ["blub"])
+        parents = {}
+        for dir, dirs, files in os.walk(media_path):
+            for subdir in dirs:
+                parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir])
+            for item in files:
+                store.append(parents.get(dir, None), [item])
         return store
