@@ -15,8 +15,8 @@ register(VIEW,
          version="0.0.1",
          gramps_target_version = '5.1',
          #fname="mediatodoview.py",
-         fname="QuiltView.py",
+         fname="mediatodoview.py",
          category = ("Media", _("Media")),
-         viewclass = 'QuiltView',
+         viewclass = 'MediaToDoView',
          stock_icon = 'media-todo-icon'
          )
