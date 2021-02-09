@@ -31,4 +31,16 @@ class MediaToDoView(PageView):
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
-        return Gtk.Button.new_with_label("Hello Simon")
+        tree = Gtk.TreeView(model=self.create_file_system_model())
+        renderer = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Title", renderer, text=0)
+        tree.append_column(column)
+        return tree
+        
+
+    def create_file_system_model(self):
+        store = Gtk.TreeStore(str)
+        
+        treeiter = store.append(None, ["root"])
+        treeiter2 = store.append(treeiter, ["blub"])
+        return store
