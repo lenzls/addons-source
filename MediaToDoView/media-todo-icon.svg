@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="38.400002pt"
+   height="38.400002pt"
+   id="svg1771"
+   sodipodi:version="0.32"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   version="1.0"
+   sodipodi:docname="gramps-quilt.svg"
+   inkscape:export-filename="/home/benny/programms/gramps/myicons/gramps_try4.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <title
+     id="title13409">Timeline Pedigree View icon</title>
+  <defs
+     id="defs1773" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="13.517279"
+     inkscape:cx="27.03502"
+     inkscape:cy="27.440129"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1916"
+     inkscape:window-height="1158"
+     inkscape:window-x="1920"
+     inkscape:window-y="20"
+     showgrid="true"
+     inkscape:window-maximized="0"
+     inkscape:measure-start="0,0"
+     inkscape:measure-end="0,0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid12783" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata1776">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>application</rdf:li>
+            <rdf:li>gramps</rdf:li>
+            <rdf:li>pedigree</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Paul Culley</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:title>Timeline Pedigree View icon</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/2.0/" />
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title />
+          </cc:Agent>
+        </dc:contributor>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/2.0/">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/Notice" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/Attribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="spiral"
+       style="fill:none;fill-rule:evenodd;stroke:#000000"
+       id="path3735"
+       sodipodi:cx="25"
+       sodipodi:cy="27.200003"
+       sodipodi:expansion="1"
+       sodipodi:revolution="3"
+       sodipodi:radius="21.023796"
+       sodipodi:argument="-18.801973"
+       sodipodi:t0="0"
+       d="m 25,27.200003 c 1.052907,0.05014 0.451882,1.444033 -0.08333,1.75 C 23.466269,29.779154 21.867019,28.409748 21.5,27.033338 20.843488,24.571263 22.913992,22.330635 25.249997,21.950003 28.67818,21.391409 31.635737,24.242714 32,27.533332 32.485506,31.919209 28.8277,35.613743 24.583338,35.950003 19.242241,36.373152 14.80247,31.897921 14.5,26.700008 14.133667,20.40464 19.43193,15.215376 25.583327,14.950002 32.832536,14.637269 38.773794,20.761814 39,27.866662 39.261165,36.069491 32.308285,42.764345 24.250008,42.950003 15.093682,43.160959 7.6441412,35.378366 7.4999995,26.366679 7.3382944,16.256927 15.951574,8.0519232 25.916657,7.9500022 36.979787,7.8368505 45.940829,17.281526 46.000001,28.199992" />
+  </g>
+</svg>
