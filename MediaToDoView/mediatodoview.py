@@ -68,7 +68,8 @@ class MediaToDoView(PageView):
             for subdir in dirs:
                 parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir, 'orange'])
             for item in files:
-                if item in media_paths_in_db:
+                relative_file_path = os.path.join(dir, item).replace(media_path + "/", "")
+                if relative_file_path in media_paths_in_db:
                     color = 'green'
                 else:
                     color = 'red'
