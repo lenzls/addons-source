@@ -45,13 +45,13 @@ class MediaToDoView(PageView):
 
         print("starting coroutine")
         import threading
-        b = threading.Thread(target=self.file_file_system_model, args=(self.dbstate.db.get_mediapath(),))
+        b = threading.Thread(target=self.file_file_system_model, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
         b.start()
         print("started coroutine")
-
+        
         return self.tree
         
-    def file_file_system_model(self, media_path):
+    def file_file_system_model(self, media_path, media_paths_in_db):
         print("start filling mode")
 
         store = Gtk.TreeStore(str, str)
@@ -68,8 +68,20 @@ class MediaToDoView(PageView):
             for subdir in dirs:
                 parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir, 'orange'])
             for item in files:
-                store.append(parents.get(dir, None), [item, 'blue'])
+                if item in media_paths_in_db:
+                    color = 'green'
+                else:
+                    color = 'red'
+
+                store.append(parents.get(dir, None), [item, color])
         
         self.tree.set_model(store)
 
         print("stop filling mode")
+
+    def get_list_of_media_paths_in_db(self):
+        media_paths = set()
+        for handle in self.dbstate.db.get_media_handles():
+            media = self.dbstate.db.get_media_from_handle(handle)
+            media_paths.add(media.get_path())
+        return media_paths
