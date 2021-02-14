@@ -38,9 +38,9 @@ class MediaToDoView(PageView):
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
-        self.tree = Gtk.TreeView(model=Gtk.TreeStore(str))
+        self.tree = Gtk.TreeView(model=Gtk.TreeStore(str, str))
         renderer = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn("Title", renderer, text=0)
+        column = Gtk.TreeViewColumn("Title", renderer, text=0, background=1)
         self.tree.append_column(column)
 
         print("starting coroutine")
@@ -54,7 +54,7 @@ class MediaToDoView(PageView):
     def file_file_system_model(self, media_path):
         print("start filling mode")
 
-        store = Gtk.TreeStore(str)
+        store = Gtk.TreeStore(str, str)
         if media_path is None:
             WarningDialog(
                 _("Media path not set"),
@@ -66,9 +66,9 @@ class MediaToDoView(PageView):
         parents = {}
         for dir, dirs, files in os.walk(media_path):
             for subdir in dirs:
-                parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir])
+                parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir, 'orange'])
             for item in files:
-                store.append(parents.get(dir, None), [item])
+                store.append(parents.get(dir, None), [item, 'blue'])
         
         self.tree.set_model(store)
 
