@@ -13,7 +13,8 @@ except ValueError:
 
 _ = _trans.gettext
 
-
+# TODO: loading spinner
+# TODO: add scrolling
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
