@@ -30,29 +30,30 @@ class MediaToDoView(PageView):
         all handling of visibility is now in rebuild, see that for more
         information.
         """
-        pass
+        print("In build tree")
 
     def build_widget(self):
         """
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
-        store = Gtk.TreeStore(str)
-        tree = Gtk.TreeView(model=store)
+        self.tree = Gtk.TreeView(model=Gtk.TreeStore(str))
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Title", renderer, text=0)
-        tree.append_column(column)
+        self.tree.append_column(column)
 
         print("starting coroutine")
         import threading
-        b = threading.Thread(target=self.file_file_system_model, args=(store, self.dbstate.db.get_mediapath()))
+        b = threading.Thread(target=self.file_file_system_model, args=(self.dbstate.db.get_mediapath(),))
         b.start()
         print("started coroutine")
 
-        return tree
+        return self.tree
         
-    def file_file_system_model(self, store, media_path):
+    def file_file_system_model(self, media_path):
         print("start filling mode")
+
+        store = Gtk.TreeStore(str)
         if media_path is None:
             WarningDialog(
                 _("Media path not set"),
@@ -68,4 +69,6 @@ class MediaToDoView(PageView):
             for item in files:
                 store.append(parents.get(dir, None), [item])
         
+        self.tree.set_model(store)
+
         print("stop filling mode")
