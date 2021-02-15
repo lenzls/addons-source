@@ -19,6 +19,12 @@ class PATH_STATE(Enum):
     PARTIALLY_IN_DB = 2 # for folders this means that some children are in DB. For files this does not make sense
     FULLY_IN_DB = 3 # for folders this means that all children are in DB
 
+COLOR_MAPPING = {
+    PATH_STATE.NOT_IN_DB: 'red',
+    PATH_STATE.PARTIALLY_IN_DB: 'yellow',
+    PATH_STATE.FULLY_IN_DB: 'green',
+}
+
 # TODO: loading spinner
 # TODO: add scrolling
 class MediaToDoView(PageView):
@@ -51,16 +57,15 @@ class MediaToDoView(PageView):
 
         print("starting coroutine")
         import threading
-        b = threading.Thread(target=self.file_file_system_model, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
+        b = threading.Thread(target=self.create_model, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
         b.start()
         print("started coroutine")
         
         return self.tree
         
-    def file_file_system_model(self, media_path, media_paths_in_db):
+    def create_model(self, media_path, media_paths_in_db):
         print("start filling mode")
 
-        store = Gtk.TreeStore(str, str)
         if media_path is None:
             WarningDialog(
                 _("Media path not set"),
@@ -69,13 +74,15 @@ class MediaToDoView(PageView):
             )
             return
 
-        # calculate states of files and folders
-        pathStates = {}
-        COLOR_MAPPING = {
-            PATH_STATE.NOT_IN_DB: 'red',
-            PATH_STATE.PARTIALLY_IN_DB: 'yellow',
-            PATH_STATE.FULLY_IN_DB: 'green',
-        }
+        path_states = self.calculate_path_states(media_path, media_paths_in_db)
+        store = self.create_path_state_filesystem_tree_model(media_path, path_states)
+        
+        self.tree.set_model(store)
+
+        print("stop filling mode")
+    
+    def calculate_path_states(self, media_path, media_paths_in_db):
+        path_states = {}
         for dir, dirs, files in os.walk(media_path, topdown=False):
             children_count = 0
             children_in_db_count = 0
@@ -87,40 +94,39 @@ class MediaToDoView(PageView):
                     children_in_db_count += 1
                 else:
                     state = PATH_STATE.NOT_IN_DB
-                pathStates[file_path] = state
+                path_states[file_path] = state
                 children_count += 1
                 
             
             for subdir in dirs:
                 subdir_path = os.path.join(dir, subdir)
                 children_count += 1
-                if pathStates[subdir_path] == PATH_STATE.FULLY_IN_DB:   # raises error when subdir not processed yet. should not happen
+                if path_states[subdir_path] == PATH_STATE.FULLY_IN_DB:   # raises error when subdir not processed yet. should not happen
                     children_in_db_count += 1
             
             if children_count == children_in_db_count:
-                pathStates[dir] = PATH_STATE.FULLY_IN_DB
+                path_states[dir] = PATH_STATE.FULLY_IN_DB
             elif children_in_db_count == 0 and children_in_db_count < children_count:
-                pathStates[dir] = PATH_STATE.NOT_IN_DB
+                path_states[dir] = PATH_STATE.NOT_IN_DB
             elif children_in_db_count > 0 and children_in_db_count < children_count:
-                pathStates[dir] = PATH_STATE.PARTIALLY_IN_DB
+                path_states[dir] = PATH_STATE.PARTIALLY_IN_DB
+        return path_states
     
-        # create tree
+    def create_path_state_filesystem_tree_model(self, media_path, path_states):
+        store = Gtk.TreeStore(str, str)
         parents = {}
         for dir, dirs, files in os.walk(media_path, topdown=True):
             
             for subdir in dirs:
                 subdir_path = os.path.join(dir, subdir)
-                color = COLOR_MAPPING[pathStates[subdir_path]]
+                color = COLOR_MAPPING[path_states[subdir_path]]
                 parents[subdir_path] = store.append(parents.get(dir, None), [subdir, color])
                 
             for item in files:
                 file_path = os.path.join(dir, item)
-                color = COLOR_MAPPING[pathStates[file_path]]
+                color = COLOR_MAPPING[path_states[file_path]]
                 store.append(parents.get(dir, None), [item, color])
-        
-        self.tree.set_model(store)
-
-        print("stop filling mode")
+        return store
 
     def get_list_of_media_paths_in_db(self):
         media_paths = set()
