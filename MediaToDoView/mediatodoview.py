@@ -15,17 +15,19 @@ except ValueError:
 _ = _trans.gettext
 
 class PATH_STATE(Enum):
+    IGNORED = 0 # empty dirs
     NOT_IN_DB = 1   # for folders this means that no child is in DB
     PARTIALLY_IN_DB = 2 # for folders this means that some children are in DB. For files this does not make sense
     FULLY_IN_DB = 3 # for folders this means that all children are in DB
 
 COLOR_MAPPING = {
+    PATH_STATE.IGNORED: 'grey',
     PATH_STATE.NOT_IN_DB: 'red',
     PATH_STATE.PARTIALLY_IN_DB: 'yellow',
     PATH_STATE.FULLY_IN_DB: 'green',
+
 }
 
-# ignore empty dirs
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
@@ -117,7 +119,9 @@ class MediaToDoView(PageView):
                 elif path_states[subdir_path] == PATH_STATE.PARTIALLY_IN_DB:
                     children_partially_in_db += 1
             
-            if children_count == children_in_db_count:
+            if children_count == 0:
+                path_states[dir] = PATH_STATE.IGNORED
+            elif children_count == children_in_db_count:
                 path_states[dir] = PATH_STATE.FULLY_IN_DB
             elif children_partially_in_db > 0 or children_in_db_count > 0:
                 path_states[dir] = PATH_STATE.PARTIALLY_IN_DB
