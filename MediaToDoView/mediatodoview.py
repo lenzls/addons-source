@@ -25,6 +25,7 @@ COLOR_MAPPING = {
     PATH_STATE.FULLY_IN_DB: 'green',
 }
 
+# ignore empty dirs
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
@@ -95,6 +96,7 @@ class MediaToDoView(PageView):
         for dir, dirs, files in os.walk(media_path, topdown=False):
             children_count = 0
             children_in_db_count = 0
+            children_partially_in_db = 0
             for item in files:
                 file_path = os.path.join(dir, item)
                 relative_file_path = file_path.replace(media_path + "/", "")
@@ -112,13 +114,16 @@ class MediaToDoView(PageView):
                 children_count += 1
                 if path_states[subdir_path] == PATH_STATE.FULLY_IN_DB:   # raises error when subdir not processed yet. should not happen
                     children_in_db_count += 1
+                elif path_states[subdir_path] == PATH_STATE.PARTIALLY_IN_DB:
+                    children_partially_in_db += 1
             
             if children_count == children_in_db_count:
                 path_states[dir] = PATH_STATE.FULLY_IN_DB
-            elif children_in_db_count == 0 and children_in_db_count < children_count:
-                path_states[dir] = PATH_STATE.NOT_IN_DB
-            elif children_in_db_count > 0 and children_in_db_count < children_count:
+            elif children_partially_in_db > 0 or children_in_db_count > 0:
                 path_states[dir] = PATH_STATE.PARTIALLY_IN_DB
+            else:
+                path_states[dir] = PATH_STATE.NOT_IN_DB
+            
         return path_states
     
     def create_path_state_filesystem_tree_model(self, media_path, path_states):
