@@ -25,7 +25,6 @@ COLOR_MAPPING = {
     PATH_STATE.FULLY_IN_DB: 'green',
 }
 
-# TODO: loading spinner
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
@@ -49,7 +48,10 @@ class MediaToDoView(PageView):
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
-        container = Gtk.ScrolledWindow()
+        self.container = Gtk.ScrolledWindow()
+        self.spinner = Gtk.Spinner()
+        self.container.add(self.spinner)
+        self.spinner.start()
 
         self.tree = Gtk.TreeView(model=Gtk.TreeStore(str, str))
         renderer = Gtk.CellRendererText()
@@ -58,12 +60,19 @@ class MediaToDoView(PageView):
 
         print("starting coroutine")
         import threading
-        b = threading.Thread(target=self.create_model, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
+        b = threading.Thread(target=self.create_model_and_replace_spinner, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
         b.start()
         print("started coroutine")
         
-        container.add(self.tree)
-        return container
+        return self.container
+
+    def create_model_and_replace_spinner(self, media_path, media_paths_in_db):
+        store = self.create_model(media_path, media_paths_in_db)
+        self.tree.set_model(store)
+        self.spinner.stop()
+        self.container.remove(self.container.get_child())
+        self.container.add(self.tree)
+        self.container.show_all()
         
     def create_model(self, media_path, media_paths_in_db):
         print("start filling mode")
@@ -78,10 +87,8 @@ class MediaToDoView(PageView):
 
         path_states = self.calculate_path_states(media_path, media_paths_in_db)
         store = self.create_path_state_filesystem_tree_model(media_path, path_states)
-        
-        self.tree.set_model(store)
-
         print("stop filling mode")
+        return store
     
     def calculate_path_states(self, media_path, media_paths_in_db):
         path_states = {}
