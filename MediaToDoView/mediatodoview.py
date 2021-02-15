@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 
 from gramps.gui.views.pageview import PageView
@@ -12,6 +13,11 @@ except ValueError:
     _trans = glocale.translation
 
 _ = _trans.gettext
+
+class PATH_STATE(Enum):
+    NOT_IN_DB = 1   # for folders this means that no child is in DB
+    PARTIALLY_IN_DB = 2 # for folders this means that some children are in DB. For files this does not make sense
+    FULLY_IN_DB = 3 # for folders this means that all children are in DB
 
 # TODO: loading spinner
 # TODO: add scrolling
@@ -63,17 +69,53 @@ class MediaToDoView(PageView):
             )
             return
 
-        parents = {}
-        for dir, dirs, files in os.walk(media_path):
-            for subdir in dirs:
-                parents[os.path.join(dir, subdir)] = store.append(parents.get(dir, None), [subdir, 'orange'])
+        # calculate states of files and folders
+        pathStates = {}
+        COLOR_MAPPING = {
+            PATH_STATE.NOT_IN_DB: 'red',
+            PATH_STATE.PARTIALLY_IN_DB: 'yellow',
+            PATH_STATE.FULLY_IN_DB: 'green',
+        }
+        for dir, dirs, files in os.walk(media_path, topdown=False):
+            children_count = 0
+            children_in_db_count = 0
             for item in files:
-                relative_file_path = os.path.join(dir, item).replace(media_path + "/", "")
+                file_path = os.path.join(dir, item)
+                relative_file_path = file_path.replace(media_path + "/", "")
                 if relative_file_path in media_paths_in_db:
-                    color = 'green'
+                    state = PATH_STATE.FULLY_IN_DB
+                    children_in_db_count += 1
                 else:
-                    color = 'red'
-
+                    state = PATH_STATE.NOT_IN_DB
+                pathStates[file_path] = state
+                children_count += 1
+                
+            
+            for subdir in dirs:
+                subdir_path = os.path.join(dir, subdir)
+                children_count += 1
+                if pathStates[subdir_path] == PATH_STATE.FULLY_IN_DB:   # raises error when subdir not processed yet. should not happen
+                    children_in_db_count += 1
+            
+            if children_count == children_in_db_count:
+                pathStates[dir] = PATH_STATE.FULLY_IN_DB
+            elif children_in_db_count == 0 and children_in_db_count < children_count:
+                pathStates[dir] = PATH_STATE.NOT_IN_DB
+            elif children_in_db_count > 0 and children_in_db_count < children_count:
+                pathStates[dir] = PATH_STATE.PARTIALLY_IN_DB
+    
+        # create tree
+        parents = {}
+        for dir, dirs, files in os.walk(media_path, topdown=True):
+            
+            for subdir in dirs:
+                subdir_path = os.path.join(dir, subdir)
+                color = COLOR_MAPPING[pathStates[subdir_path]]
+                parents[subdir_path] = store.append(parents.get(dir, None), [subdir, color])
+                
+            for item in files:
+                file_path = os.path.join(dir, item)
+                color = COLOR_MAPPING[pathStates[file_path]]
                 store.append(parents.get(dir, None), [item, color])
         
         self.tree.set_model(store)
