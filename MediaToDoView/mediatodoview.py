@@ -26,7 +26,6 @@ COLOR_MAPPING = {
 }
 
 # TODO: loading spinner
-# TODO: add scrolling
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
@@ -50,6 +49,8 @@ class MediaToDoView(PageView):
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
+        container = Gtk.ScrolledWindow()
+
         self.tree = Gtk.TreeView(model=Gtk.TreeStore(str, str))
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Title", renderer, text=0, background=1)
@@ -61,7 +62,8 @@ class MediaToDoView(PageView):
         b.start()
         print("started coroutine")
         
-        return self.tree
+        container.add(self.tree)
+        return container
         
     def create_model(self, media_path, media_paths_in_db):
         print("start filling mode")
