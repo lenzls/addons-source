@@ -25,9 +25,10 @@ COLOR_MAPPING = {
     PATH_STATE.NOT_IN_DB: 'red',
     PATH_STATE.PARTIALLY_IN_DB: 'yellow',
     PATH_STATE.FULLY_IN_DB: 'green',
-
 }
 
+# TODO: Improve colors
+# TODO: try out progress bar
 class MediaToDoView(PageView):
 
     def __init__(self, pdata, dbstate, uistate):
@@ -52,9 +53,13 @@ class MediaToDoView(PageView):
         by the base class. Returns a gtk container widget.
         """
         self.container = Gtk.ScrolledWindow()
-        self.spinner = Gtk.Spinner()
-        self.container.add(self.spinner)
-        self.spinner.start()
+        progress_bar_container = Gtk.Layout()
+        self.progress_bar = Gtk.ProgressBar()
+        self.progress_bar.set_show_text(True)
+        self.progress_bar.set_text("Hello")
+        self.progress_bar.set_pulse_step(0.01)
+        progress_bar_container.add(self.progress_bar)
+        self.container.add(progress_bar_container)
 
         self.tree = Gtk.TreeView(model=Gtk.TreeStore(str, str))
         renderer = Gtk.CellRendererText()
@@ -63,16 +68,15 @@ class MediaToDoView(PageView):
 
         print("starting coroutine")
         import threading
-        b = threading.Thread(target=self.create_model_and_replace_spinner, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
+        b = threading.Thread(target=self.create_model_and_replace_progress_bar, args=(self.dbstate.db.get_mediapath(), self.get_list_of_media_paths_in_db()))
         b.start()
         print("started coroutine")
         
         return self.container
 
-    def create_model_and_replace_spinner(self, media_path, media_paths_in_db):
+    def create_model_and_replace_progress_bar(self, media_path, media_paths_in_db):
         store = self.create_model(media_path, media_paths_in_db)
         self.tree.set_model(store)
-        self.spinner.stop()
         self.container.remove(self.container.get_child())
         self.container.add(self.tree)
         self.container.show_all()
@@ -128,6 +132,8 @@ class MediaToDoView(PageView):
             else:
                 path_states[dir] = PATH_STATE.NOT_IN_DB
             
+            self.progress_bar.pulse()
+            
         return path_states
     
     def create_path_state_filesystem_tree_model(self, media_path, path_states):
@@ -144,6 +150,8 @@ class MediaToDoView(PageView):
                 file_path = os.path.join(dir, item)
                 color = COLOR_MAPPING[path_states[file_path]]
                 store.append(parents.get(dir, None), [item, color])
+            
+            self.progress_bar.pulse()
         return store
 
     def get_list_of_media_paths_in_db(self):
