@@ -4,7 +4,7 @@ import os
 from gramps.gui.views.pageview import PageView
 from gramps.gui.dialog import WarningDialog
 from gramps.gen.const import GRAMPS_LOCALE as glocale
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 
 try:
@@ -56,7 +56,6 @@ class MediaToDoView(PageView):
         progress_bar_container = Gtk.Layout()
         self.progress_bar = Gtk.ProgressBar()
         self.progress_bar.set_show_text(True)
-        self.progress_bar.set_text("Hello")
         self.progress_bar.set_pulse_step(0.01)
         progress_bar_container.add(self.progress_bar)
         self.container.add(progress_bar_container)
@@ -100,6 +99,8 @@ class MediaToDoView(PageView):
     def calculate_path_states(self, media_path, media_paths_in_db):
         path_states = {}
         for dir, dirs, files in os.walk(media_path, topdown=False):
+            GLib.idle_add(self.update_progress, "First pass\n Collect files in media directory and check if media objects exist: " + dir)
+            
             children_count = 0
             children_in_db_count = 0
             children_partially_in_db = 0
@@ -132,14 +133,13 @@ class MediaToDoView(PageView):
             else:
                 path_states[dir] = PATH_STATE.NOT_IN_DB
             
-            self.progress_bar.pulse()
-            
         return path_states
     
     def create_path_state_filesystem_tree_model(self, media_path, path_states):
         store = Gtk.TreeStore(str, str)
         parents = {}
         for dir, dirs, files in os.walk(media_path, topdown=True):
+            GLib.idle_add(self.update_progress, "Second pass\n Create navigatable tree view: " + dir)
             
             for subdir in dirs:
                 subdir_path = os.path.join(dir, subdir)
@@ -151,12 +151,16 @@ class MediaToDoView(PageView):
                 color = COLOR_MAPPING[path_states[file_path]]
                 store.append(parents.get(dir, None), [item, color])
             
-            self.progress_bar.pulse()
         return store
 
     def get_list_of_media_paths_in_db(self):
         media_paths = set()
         for handle in self.dbstate.db.get_media_handles():
             media = self.dbstate.db.get_media_from_handle(handle)
+            GLib.idle_add(self.update_progress, "Collect media objects in DB: " + media.get_gramps_id())
             media_paths.add(media.get_path())
         return media_paths
+
+    def update_progress(self, info):
+        self.progress_bar.set_text(info)
+        self.progress_bar.pulse()
