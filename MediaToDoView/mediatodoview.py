@@ -4,7 +4,7 @@ import os
 from gramps.gui.views.pageview import PageView
 from gramps.gui.dialog import WarningDialog
 from gramps.gen.const import GRAMPS_LOCALE as glocale
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 
 try:
@@ -52,13 +52,18 @@ class MediaToDoView(PageView):
         Builds the container widget for the main view pane. Must be overridden
         by the base class. Returns a gtk container widget.
         """
+
+        builder = Gtk.Builder()
+        builder.add_from_file(os.path.dirname(__file__) + os.sep + "initialization.glade")
+
         self.container = Gtk.ScrolledWindow()
-        progress_bar_container = Gtk.Layout()
-        self.progress_bar = Gtk.ProgressBar()
+        initialization_widget = builder.get_object("grid-container")
+        initialization_widget.set_hexpand(True)
+        initialization_widget.set_hexpand_set(True)
+        self.progress_bar = builder.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_pulse_step(0.01)
-        progress_bar_container.add(self.progress_bar)
-        self.container.add(progress_bar_container)
+        self.container.add(initialization_widget)
 
         self.tree = Gtk.TreeView(model=Gtk.TreeStore(str, str))
         renderer = Gtk.CellRendererText()
