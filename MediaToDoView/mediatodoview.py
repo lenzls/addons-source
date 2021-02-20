@@ -81,7 +81,10 @@ class MediaToDoView(PageView):
 
     def create_model_and_replace_progress_bar(self, media_path, media_paths_in_db):
         store = self.create_model(media_path, media_paths_in_db)
-        self.tree.set_model(store)
+        GLib.idle_add(self.replace_progress_bar, store)
+    
+    def replace_progress_bar(self, model):
+        self.tree.set_model(model)
         self.container.remove(self.container.get_child())
         self.container.add(self.tree)
         self.container.show_all()
