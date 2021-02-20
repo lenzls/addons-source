@@ -60,6 +60,7 @@ class MediaToDoView(PageView):
         initialization_widget = builder.get_object("grid-container")
         initialization_widget.set_hexpand(True)
         initialization_widget.set_hexpand_set(True)
+        self.progress_text = builder.get_object("progress-update-text")
         self.progress_bar = builder.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_pulse_step(0.01)
@@ -103,8 +104,9 @@ class MediaToDoView(PageView):
     
     def calculate_path_states(self, media_path, media_paths_in_db):
         path_states = {}
+        GLib.idle_add(self.update_progress_text, "Collect files in media directory and check if media objects exist")
         for dir, dirs, files in os.walk(media_path, topdown=False):
-            GLib.idle_add(self.update_progress, "First pass\n Collect files in media directory and check if media objects exist: " + dir)
+            GLib.idle_add(self.update_progress, dir)
             
             children_count = 0
             children_in_db_count = 0
@@ -143,8 +145,9 @@ class MediaToDoView(PageView):
     def create_path_state_filesystem_tree_model(self, media_path, path_states):
         store = Gtk.TreeStore(str, str)
         parents = {}
+        GLib.idle_add(self.update_progress_text, "Create navigatable tree view")
         for dir, dirs, files in os.walk(media_path, topdown=True):
-            GLib.idle_add(self.update_progress, "Second pass\n Create navigatable tree view: " + dir)
+            GLib.idle_add(self.update_progress, dir)
             
             for subdir in dirs:
                 subdir_path = os.path.join(dir, subdir)
@@ -160,12 +163,16 @@ class MediaToDoView(PageView):
 
     def get_list_of_media_paths_in_db(self):
         media_paths = set()
+        GLib.idle_add(self.update_progress_text, "Collect media objects in DB")
         for handle in self.dbstate.db.get_media_handles():
             media = self.dbstate.db.get_media_from_handle(handle)
-            GLib.idle_add(self.update_progress, "Collect media objects in DB: " + media.get_gramps_id())
+            GLib.idle_add(self.update_progress, media.get_gramps_id())
             media_paths.add(media.get_path())
         return media_paths
 
     def update_progress(self, info):
         self.progress_bar.set_text(info)
         self.progress_bar.pulse()
+
+    def update_progress_text(self, info):
+        self.progress_text.set_text(info)
