@@ -21,13 +21,12 @@ class PATH_STATE(Enum):
     FULLY_IN_DB = 3 # for folders this means that all children are in DB
 
 COLOR_MAPPING = {
-    PATH_STATE.IGNORED: 'grey',
-    PATH_STATE.NOT_IN_DB: 'red',
-    PATH_STATE.PARTIALLY_IN_DB: 'yellow',
-    PATH_STATE.FULLY_IN_DB: 'green',
+    PATH_STATE.IGNORED: '#bfbfbf',
+    PATH_STATE.NOT_IN_DB: '#f58484',
+    PATH_STATE.PARTIALLY_IN_DB: '#e9e09d',
+    PATH_STATE.FULLY_IN_DB: '#48c78e',
 }
 
-# TODO: Improve colors
 # TODO: try out progress bar
 class MediaToDoView(PageView):
 
