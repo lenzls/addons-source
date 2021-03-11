@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    version="1.0"
-   sodipodi:docname="gramps-quilt.svg"
+   sodipodi:docname="media-todo-icon.svg"
    inkscape:export-filename="/home/benny/programms/gramps/myicons/gramps_try4.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -98,16 +98,57 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       sodipodi:type="spiral"
-       style="fill:none;fill-rule:evenodd;stroke:#000000"
-       id="path3735"
-       sodipodi:cx="25"
-       sodipodi:cy="27.200003"
-       sodipodi:expansion="1"
-       sodipodi:revolution="3"
-       sodipodi:radius="21.023796"
-       sodipodi:argument="-18.801973"
-       sodipodi:t0="0"
-       d="m 25,27.200003 c 1.052907,0.05014 0.451882,1.444033 -0.08333,1.75 C 23.466269,29.779154 21.867019,28.409748 21.5,27.033338 20.843488,24.571263 22.913992,22.330635 25.249997,21.950003 28.67818,21.391409 31.635737,24.242714 32,27.533332 32.485506,31.919209 28.8277,35.613743 24.583338,35.950003 19.242241,36.373152 14.80247,31.897921 14.5,26.700008 14.133667,20.40464 19.43193,15.215376 25.583327,14.950002 32.832536,14.637269 38.773794,20.761814 39,27.866662 39.261165,36.069491 32.308285,42.764345 24.250008,42.950003 15.093682,43.160959 7.6441412,35.378366 7.4999995,26.366679 7.3382944,16.256927 15.951574,8.0519232 25.916657,7.9500022 36.979787,7.8368505 45.940829,17.281526 46.000001,28.199992" />
+       style="fill:none;stroke:#000000;stroke-width:0.96055645px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 21.990518,16.355226 V 41.229545 H 35.01024"
+       id="path64"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 22,33.200002 H 35"
+       id="path66"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 22,25.200002 H 35"
+       id="path68"
+       inkscape:connector-curvature="0" />
+    <rect
+       id="rect72"
+       width="17"
+       height="6"
+       x="29"
+       y="22.200003"
+       style="fill:#008000" />
+    <rect
+       id="rect72-3"
+       width="17"
+       height="6"
+       x="29"
+       y="30.200005"
+       style="fill:#ffd42a" />
+    <rect
+       id="rect72-6"
+       width="17"
+       height="6"
+       x="29"
+       y="38.200001"
+       style="fill:#008000" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.03429568px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 10,51.200002 V 9.4790718 5.200002"
+       id="path95"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 10,16.200002 h 8"
+       id="path97"
+       inkscape:connector-curvature="0" />
+    <rect
+       id="rect72-7"
+       width="17"
+       height="6"
+       x="13"
+       y="13.200002"
+       style="fill:#ffd42a" />
   </g>
 </svg>
